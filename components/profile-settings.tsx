@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { User, Mail, Phone, CreditCard, LogOut } from "lucide-react"
+import { User, Mail, Phone, CreditCard, LogOut, Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,10 +11,13 @@ import { Switch } from "@/components/ui/switch"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useToast } from "@/components/ui/use-toast"
 import { useWeb3 } from "@/hooks/use-web3"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { useTheme } from "next-themes"
 
 export function ProfileSettings() {
   const { toast } = useToast()
   const { account, isConnected, disconnectWallet } = useWeb3()
+  const { theme } = useTheme()
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -70,22 +73,25 @@ export function ProfileSettings() {
 
   return (
     <div className="mx-auto max-w-md space-y-6">
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden border-none bg-white/80 backdrop-blur-sm dark:bg-gray-900/80">
+        <CardHeader className="relative gradient-bg text-white">
+          <div className="absolute right-4 top-4">
+            <ThemeToggle />
+          </div>
           <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
+            <Avatar className="h-16 w-16 border-2 border-white">
               <AvatarImage src="/placeholder.svg?height=64&width=64" alt="Profile" />
               <AvatarFallback>RK</AvatarFallback>
             </Avatar>
             <div>
               <CardTitle>{profile.name}</CardTitle>
-              <CardDescription>{profile.email}</CardDescription>
+              <CardDescription className="text-white/80">{profile.email}</CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           {isConnected && (
-            <div className="mb-4 rounded-lg bg-muted p-3">
+            <div className="mb-4 rounded-lg bg-accent/10 p-3">
               <p className="text-sm font-medium">Connected Wallet</p>
               <p className="mt-1 break-all text-xs text-muted-foreground">{account}</p>
             </div>
@@ -106,6 +112,7 @@ export function ProfileSettings() {
                       id="name"
                       value={profile.name}
                       onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                      className="bg-white dark:bg-gray-800"
                     />
                   </div>
                   <div className="space-y-2">
@@ -115,6 +122,7 @@ export function ProfileSettings() {
                       type="email"
                       value={profile.email}
                       onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                      className="bg-white dark:bg-gray-800"
                     />
                   </div>
                   <div className="space-y-2">
@@ -123,6 +131,7 @@ export function ProfileSettings() {
                       id="phone"
                       value={profile.phone}
                       onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                      className="bg-white dark:bg-gray-800"
                     />
                   </div>
                   <div className="space-y-2">
@@ -131,6 +140,7 @@ export function ProfileSettings() {
                       id="vehicle"
                       value={profile.vehicle}
                       onChange={(e) => setProfile({ ...profile, vehicle: e.target.value })}
+                      className="bg-white dark:bg-gray-800"
                     />
                   </div>
                 </>
@@ -217,6 +227,17 @@ export function ProfileSettings() {
                     }
                   />
                 </div>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="theme-toggle">Dark Mode</Label>
+                    <p className="text-sm text-muted-foreground">Toggle between light and dark theme</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Sun className="h-4 w-4 text-muted-foreground" />
+                    <Switch id="theme-toggle" checked={theme === "dark"} />
+                    <Moon className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="payment" className="space-y-4 pt-4">
@@ -248,7 +269,7 @@ export function ProfileSettings() {
               <Button variant="outline" className="flex-1" onClick={() => setIsEditing(false)}>
                 Cancel
               </Button>
-              <Button className="flex-1" onClick={handleSaveProfile} disabled={isSaving}>
+              <Button className="flex-1 gradient-bg" onClick={handleSaveProfile} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </div>

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useWeb3 } from "@/hooks/use-web3"
@@ -17,24 +16,28 @@ const networks = [
     name: "Ethereum",
     icon: "/placeholder.svg?height=40&width=40",
     chainId: 1,
+    color: "#627EEA",
   },
   {
     id: "polygon",
     name: "Polygon",
     icon: "/placeholder.svg?height=40&width=40",
     chainId: 137,
+    color: "#8247E5",
   },
   {
     id: "aptos",
     name: "Aptos",
     icon: "/placeholder.svg?height=40&width=40",
     chainId: null, // Not an EVM chain
+    color: "#2DD8A7",
   },
   {
     id: "binance",
     name: "BNB Chain",
     icon: "/placeholder.svg?height=40&width=40",
     chainId: 56,
+    color: "#F0B90B",
   },
 ]
 
@@ -70,13 +73,20 @@ export function NetworkSelector({ onClose }: NetworkSelectorProps) {
         {networks.map((network) => (
           <div
             key={network.id}
-            className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent ${
+            className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/10 ${
               selectedNetwork === network.id ? "border-primary" : ""
             }`}
             onClick={() => setSelectedNetwork(network.id)}
+            style={{
+              borderColor: selectedNetwork === network.id ? network.color : undefined,
+              boxShadow: selectedNetwork === network.id ? `0 0 0 1px ${network.color}20` : undefined,
+            }}
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background">
-              <Image src={network.icon || "/placeholder.svg"} alt={network.name} width={24} height={24} />
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-full"
+              style={{ backgroundColor: `${network.color}20` }}
+            >
+              <div className="h-8 w-8 rounded-full" style={{ backgroundColor: network.color }}></div>
             </div>
             <div className="flex-1">
               <p className="font-medium">{network.name}</p>
@@ -86,7 +96,7 @@ export function NetworkSelector({ onClose }: NetworkSelectorProps) {
         ))}
       </div>
 
-      <Button className="w-full" onClick={handleConnect} disabled={isConnecting}>
+      <Button className="w-full gradient-bg" onClick={handleConnect} disabled={isConnecting}>
         {isConnecting ? "Connecting..." : isConnected ? "Switch Network" : "Connect Wallet"}
       </Button>
     </div>
